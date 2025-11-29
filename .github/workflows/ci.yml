@@ -1,5 +1,14 @@
 name: CI-pipeline 
-on: push 
+on: 
+  push: 
+    branches: 
+      - main
+  pull_request: 
+    branches: 
+      - main
+env: 
+  APP_ENV: production
+  LOG_LEVEL: debug
 jobs: 
   build: 
     runs-on: ubuntu-latest 
@@ -18,3 +27,9 @@ jobs:
         run: echo "${{ runner.os }}"
       - name: Show GitHub Repo
         run: echo "${{ github.repository }}"
+      - name: print env variables
+        run: | 
+          echo "APP_ENV is $APP_ENV"
+          echo "LOG_LEVEL is $LOG_LEVEL"
+      - name: show my github secret
+        run: echo "${{ secrets.SECRET_MSG }}"
