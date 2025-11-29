@@ -6,3 +6,7 @@ jobs:
     steps: 
       - name: print hello 
         run: echo "hello world"
+      - name: show current time
+        run: date
+      - name: list files in workspace
+        run: ls -la
