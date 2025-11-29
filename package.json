@@ -1,0 +1,27 @@
+{
+  "name": "ci-cd-github-actions",
+  "version": "1.0.0",
+  "description": "GitHub Actions -->CICD Pipeline tool directly into GitHub Run test Automatically Building Source Code GhCR",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "test": "jest"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/annamthej/CI-CD-Github-Actions.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/annamthej/CI-CD-Github-Actions/issues"
+  },
+  "homepage": "https://github.com/annamthej/CI-CD-Github-Actions#readme",
+  "dependencies": {
+    "express": "^5.1.0"
+  },
+  "devDependencies": {
+    "jest": "^30.2.0"
+  }
+}
