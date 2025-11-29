@@ -10,3 +10,11 @@ jobs:
         run: date
       - name: list files in workspace
         run: ls -la
+      - name: prnt workflow event
+        run: echo "${{ github.event_name }}"
+      - name: Show GitHub workspace 
+        run: echo "${{ github.workspace }}"
+      - name: runner OS 
+        run: echo "${{ runner.os }}"
+      - name: Show GitHub Repo
+        run: echo "${{ github.repository }}"
