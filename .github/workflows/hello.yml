@@ -1,6 +1,6 @@
 name: Hello world workflow 
 on:
-    push:
+    pull_request:
         branches:
             - main
 jobs:
