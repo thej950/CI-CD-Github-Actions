@@ -318,11 +318,84 @@ jobs:
 
 13. Build and push the image to dockerhub using GitHub Actions 
 
+```bash
+- Generate token in Github with read,write,delete permissions 
 
+- Need to give secrets
+   - GitHub->settings->secrets and variables->actions->click on new repository 
+    DOCKERHUB_USERNAME: xxxxx
+    DOCKERHUB_TOKEN: xxxxxx
 
+```
 
+```yml
+name: Docker Build (CI)
+on:
+  # push:
+  #   branches: [ main ]
+  pull_request:
 
+jobs:
+  build:
+    runs-on: ubuntu-latest
 
+    steps:
+      - uses: actions/checkout@v4
+      - name: Login to Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+      - name: Build docker image
+        run: |
+          docker build -t ${{ secrets.DOCKERHUB_USERNAME }}/myapp:ci .
+      - name: Push docker image
+        run: |
+          docker push ${{ secrets.DOCKERHUB_USERNAME }}/myapp:ci
+```
+
+14. build and push the image to acr using github actions 
+
+```bash
+- search Create container registry
+- create ACR in Azure, copy(username,login-server,password) 
+
+- Need to give secrets
+   - GitHub->settings->secrets and variables->actions->click on new repository 
+    ACR_USERNAME: xxxxxx
+    ACR_LOGIN_SERVER: xxxxx
+    ACR_PASSWORD: xxxxxx
+
+```
+
+```yml
+name: Docker Build (CI)
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+     
+      - name: Login to Azure Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ${{ secrets.ACR_LOGIN_SERVER }}
+          username: ${{ secrets.ACR_USERNAME }}
+          password: ${{ secrets.ACR_PASSWORD }}
+      - name: Build docker image
+        run: |
+          docker build -t ${{ secrets.ACR_LOGIN_SERVER }}/myapp:ci .
+      - name: Push docker image
+        run: |
+          docker push ${{ secrets.ACR_LOGIN_SERVER }}/myapp:ci 
+
+```
 
 
 
