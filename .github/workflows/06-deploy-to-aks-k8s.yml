@@ -1,0 +1,48 @@
+name: Docker Build (CI)
+
+on: push
+  
+
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+      - name: Login to Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+      - name: Build docker image
+        run: |
+          docker build -t ${{ secrets.DOCKERHUB_USERNAME }}/myapp:ci . 
+      - name: Push docker image
+        run: |
+          docker push ${{ secrets.DOCKERHUB_USERNAME }}/myapp:ci      
+      - name: Load kubeconfig
+        env:
+          KUBE_CONFIG_DATA: ${{ secrets.KUBE_CONFIG_DATA }}
+        run: |
+            ls -la
+    #     run: |
+    #       mkdir -p ~/.kube
+    #       echo "$KUBE_CONFIG_DATA" | sed 's/\\n/\n/g' > ~/.kube/config 
+    #       chmod 600 ~/.kube/config
+    #   - name: Verify the Cluster Access
+    #     run: |
+    #       kubectl get nodes
+    #   - name: Deploy to Kubernetes
+    #     run: |
+    #       kubectl set image deployment/nginx-deploy nginx=httpd:latest
+    #       echo "Deployment initiated"
+    #       set +e
+    #       kubectl rollout status deployment/nginx-deploy --timeout=60s
+    #       if [ $? -ne 0 ]; then
+    #         echo "Rollout failed, initiating rollback"
+    #         kubectl rollout undo deployment/nginx-deploy
+    #         exit 1
+    #       else
+    #         echo "Rollout successful"  
+    #       fi  
