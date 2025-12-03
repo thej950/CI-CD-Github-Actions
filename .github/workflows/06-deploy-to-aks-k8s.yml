@@ -25,24 +25,21 @@ jobs:
         env:
           KUBE_CONFIG_DATA: ${{ secrets.KUBE_CONFIG_DATA }}
         run: |
-            ls -la
-    #     run: |
-    #       mkdir -p ~/.kube
-    #       echo "$KUBE_CONFIG_DATA" | sed 's/\\n/\n/g' > ~/.kube/config 
-    #       chmod 600 ~/.kube/config
-    #   - name: Verify the Cluster Access
-    #     run: |
-    #       kubectl get nodes
-    #   - name: Deploy to Kubernetes
-    #     run: |
-    #       kubectl set image deployment/nginx-deploy nginx=httpd:latest
-    #       echo "Deployment initiated"
-    #       set +e
-    #       kubectl rollout status deployment/nginx-deploy --timeout=60s
-    #       if [ $? -ne 0 ]; then
-    #         echo "Rollout failed, initiating rollback"
-    #         kubectl rollout undo deployment/nginx-deploy
-    #         exit 1
-    #       else
-    #         echo "Rollout successful"  
-    #       fi  
+          ls -la
+          
+      - name: Verify the Cluster Access
+        run: |
+          kubectl get nodes
+      - name: Deploy to Kubernetes
+        run: |
+          kubectl set image deployment/nginx-deploy nginx=httpd:latest
+          echo "Deployment initiated"
+          set +e
+          kubectl rollout status deployment/nginx-deploy --timeout=60s
+          if [ $? -ne 0 ]; then
+            echo "Rollout failed, initiating rollback"
+            kubectl rollout undo deployment/nginx-deploy
+            exit 1
+          else
+            echo "Rollout successful"  
+          fi  
