@@ -32,16 +32,16 @@ jobs:
       - name: Verify the Cluster Access
         run: |
           kubectl get nodes
-      # - name: Deploy to Kubernetes
-      #   run: |
-      #     kubectl set image deployment/nginx-deploy nginx=httpd:latest
-      #     echo "Deployment initiated"
-      #     set +e
-      #     kubectl rollout status deployment/nginx-deploy --timeout=60s
-      #     if [ $? -ne 0 ]; then
-      #       echo "Rollout failed, initiating rollback"
-      #       kubectl rollout undo deployment/nginx-deploy
-      #       exit 1
-      #     else
-      #       echo "Rollout successful"  
-      #     fi  
+      - name: Deploy to Kubernetes
+        run: |
+          kubectl set image deployment/nginx-deploy nginx=httpd:latest
+          echo "Deployment initiated"
+          set +e
+          kubectl rollout status deployment/nginx-deploy --timeout=60s
+          if [ $? -ne 0 ]; then
+            echo "Rollout failed, initiating rollback"
+            kubectl rollout undo deployment/nginx-deploy
+            exit 1
+          else
+            echo "Rollout successful"  
+          fi  
