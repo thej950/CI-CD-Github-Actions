@@ -461,14 +461,46 @@ jobs:
 
 ![alt text](.images/image-3.png)
 
+
+![alt text](.images/image-4.png)
+
+![alt text](.images/image-5.png)
+
 - Run Below Yaml file for testing 
 
+```bash
+name: Hello World Workflow
+on:
+    push:
+        branches:
+            - main
+jobs:
+    hello_world:
+     runs-on: self-hosted
+     steps:
+        - name: Print Hello World
+          run: echo "Hello, World!"
+        - uses: actions/checkout@v4  
+```
 
 
+- After Ruuning Code will be downloaded into Our Machine      
+
+![alt text](.images/image-6.png)
 
 
+17. Integrating with  Kubernetes 
 
+  ![alt text](.images/image-7.png)
+  
+  - To Integrate Github Actions self-Hosted machine with Kuberenetes cluster it needs to authenticated with config file  
+  - Copy ~./kube/config file 
+  - pste into Github secrets location 
+      KUBE_CONFIG_DATA: xxxxxx
 
+ ![alt text](.images/image-8.png)
+
+ ![alt text](.images/image-9.png)
 
 
 
