@@ -1,0 +1,12 @@
+name: Hello World Workflow
+on:
+    push:
+        branches:
+            - main
+jobs:
+    hello_world:
+     runs-on: self-hosted
+     steps:
+        - name: Print Hello World
+          run: echo "Hello, World!"
+        - uses: actions/checkout@v4  
