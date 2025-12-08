@@ -1,23 +1,51 @@
-# GitHub Actions (CICD Pipeline tool directly into GitHub)
+## GitHub Actions (CICD Pipeline tool directly into GitHub)
 ### Run test Automatically -> Building Source Code -> GHCR (Hub for Docker Images)
 
 
-# Let's Start GithubAction Concepts
+# Let's Start GitHub Actions Concepts
 
-1. Create a Repository in GitHub called CICDPipeline-GithubAction
-2. Create a Folder Called GithubAction (you can create with any name) and open it in VSCode
-3. Install Nodejs and check the version using node -v and npm -v command
-4. In VSCode Add the extension GitHub Action from GitHub, GitHub Co-pilot
-5. Initialize the git local Repo and push the code to remote repo
-6. Create test.html file and commit it locally and then push to the remote repo  
+1. **Create a Repository in GitHub** called CICDPipeline-GithubAction
+2. **Create a Folder** called GithubAction (you can create with any name) and **open it in VSCode**
+3. **Install Node.js** and check the version using `node -v` and `npm -v` command
+4. **In VSCode Add extensions**: GitHub Actions from GitHub, GitHub Copilot
+5. **Initialize the git local repo** and push the code to remote repo
+6. **Create test.html file** and commit it locally then push to the remote repo
 
-# Reference for Github actions [Click](https://docs.github.com/en/actions/reference/workflows-and-actions) 
 
-# 1. Create a directory called .github/workflows/ci.yaml
+## 📚 Resources & Next Steps
 
-# 2. GitHub can create the CI/CD pipeline on 2 platform Cloud(GitHub) Hosted Runners (ubuntu,windows,macos) Extensible through MarketPlace
+- **GitHub Actions Documentation**: [Official Reference](https://docs.github.com/en/actions/reference/workflows-and-actions)
 
-# 3. Create first CICD pipeline using GitHub Action, update code in ci.yaml file
+### Create Workflow Directory
+
+Create a new directory structure for GitHub Actions:
+
+```bash
+mkdir -p .github/workflows
+```
+
+Then create your first workflow file:
+
+```bash
+touch .github/workflows/ci.yaml
+```
+
+This will trigger automatic CI/CD pipelines on code push.
+
+
+# 2. GitHub Actions CI/CD Platforms
+
+GitHub Actions supports two runner types:
+
+- **GitHub-hosted runners**: Pre-configured environments (Ubuntu, Windows, macOS)
+- **Self-hosted runners**: Custom machines with extensible marketplace integrations
+
+---
+
+# 3. Create Your First CI/CD Pipeline
+
+Update the `ci.yaml` file in `.github/workflows/`:
+
 ```yml
 name: CI pipeline
 on: push
@@ -39,7 +67,10 @@ jobs:
         run: echo "${{ runner.os }}"
 ```
 
-# 4. Created one more hello.yaml file under workflows folder
+# 4. Create Hello World Workflow
+
+Create a new workflow file `hello.yaml` under `.github/workflows/`:
+
 ```yml
 name: Hello World Workflow
 on:
@@ -54,47 +85,95 @@ jobs:
         run: echo "Hello, World!"
 ```
 
+This workflow triggers on every push to the `main` branch and executes a simple echo command.
+
 ---
 
-# 5. Lets add Nodejs code in our repository so that we can do certain operation using GitHub Actions
-- npm init -y
-- npm install --save-dev jest
-- npm install express
 
-**open `package.json` and update the scripts**
+# 5. Add Node.js Code to Your Repository
+
+Initialize the Node.js project and install dependencies:
+
+```bash
+npm init -y
+npm install express
+npm install --save-dev jest
+```
+
+Update the `scripts` section in `package.json`:
+
 ```json
 "scripts": {
   "start": "node index.js",
   "test": "jest"
-},
+}
 ```
 
-# 6. Create index.js file with following content
+
+# 6. Create index.js
+
+Create `index.js` with the following content:
+
 ```js
 function sum(a, b) {
-    return a + b;
+  return a + b;
 }
-console.log("sub(3,5)=", sum(3, 5));
+
+console.log("sum(3,5) =", sum(3, 5));
+
 module.exports = sum;
 ```
 
-# 7. Create the test directory
-- **create file `tests/app.test.js` file**
+---
+
+# 7. Create test directory and test file
+
+Create `tests/app.test.js`:
+
 ```js
-test("Sample test", () => {
-  expect(3 + 5).toBe(8);
+const sum = require("../index");
+
+test("adds two numbers", () => {
+  expect(sum(3, 5)).toBe(8);
 });
 ```
 
-# 8. Create .gitignore file and write below content
-- **node_modules/**
+---
 
-# 9. Check the project is ready on dev side
-- **node index.js**
-- **npm test**
+# 8. Create .gitignore file
+
+Add the following to `.gitignore`:
+
+```
+node_modules/
+```
+
+---
+
+# 9. Test your project locally
+
+Run the following commands:
+
+```bash
+node index.js
+npm test
+```
+
+Expected output:
+
+```
+sum(3,5) = 8
+PASS  tests/app.test.js
+✓ adds two numbers
+```
+
+---
 
 
-# 10. Create the Node.yaml file under workflows folder
+# 10. Create Node.js Workflow
+
+Create `.github/workflows/node.yaml`:
+
 ```yml
 name: Node.js CI
 on: [push, pull_request]
@@ -103,28 +182,20 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
+      - uses: actions/setup-node@v4
         with:
           node-version: '20'
-          
-      - name: Print Node.js version
-        run: node -v
-        
-      - name: Print npm version
-        run: npm -v
-        
       - name: Install dependencies
         run: npm install
-        
       - name: Run tests
         run: npm test
 ```
 
-# 11. We can also create the parallel jobs
-- **job1 is running in parallel to another job**
-- **we are using keyword `needs` which allows jobs to run in aequence way** 
+---
+
+# 11. Parallel and Sequential Jobs
+
+Use the `needs` keyword to control job execution order:
 
 ```yml
 name: Parallel Jobs
@@ -133,129 +204,93 @@ jobs:
   job1:
     runs-on: ubuntu-latest
     steps:
-      - name: Job 1 - Print Message
-        run: echo "This is Job 1"
+      - run: echo "Job 1"
         
   job2:
     needs: job1
     runs-on: ubuntu-latest
     steps:
-      - name: Job 2 - Print Message
-        run: echo "This is Job 2"
+      - run: echo "Job 2"
         
   job3:
     needs: job2
     runs-on: ubuntu-latest
     steps:
-      - name: Job 3 - Print Message
-        run: echo "This is Job 3"
+      - run: echo "Job 3"
 ```
 
-# 12. complete-ci.yml
+---
+
+# 12. Complete CI Pipeline
+
 ```yml
 name: CI Pipeline
-
-on:
-  pull_request:
-
+on: [push, pull_request]
 jobs:
   lint:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      
       - uses: actions/setup-node@v4
         with:
           node-version: 20
-
-      - name: Install dependencies
-        run: npm ci
-
-      - name: Run linter
-        run: npm run lint --if-present
+      - run: npm ci
+      - run: npm run lint --if-present
 
   test:
-    runs-on: ubuntu-latest
     needs: lint
+    runs-on: ubuntu-latest
     strategy:
       matrix:
         node: [18, 20]
-
     steps:
       - uses: actions/checkout@v4
-      
       - uses: actions/setup-node@v4
         with:
           node-version: ${{ matrix.node }}
-
-      - name: Cache dependencies
-        uses: actions/cache@v4
+      - uses: actions/cache@v4
         with:
           path: ~/.npm
           key: ${{ runner.os }}-npm-${{ hashFiles('package-lock.json') }}
-
-      - name: Install dependencies
-        run: npm ci
-
-      - name: Run unit tests
-        run: npm test --if-present
-
-      - name: Upload test coverage
-        uses: actions/upload-artifact@v4
-        with:
-          name: coverage-${{ matrix.node }}
-          path: coverage/
+      - run: npm ci
+      - run: npm test --if-present
 
   build:
-    runs-on: ubuntu-latest
     needs: test
-
+    runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-
       - uses: actions/setup-node@v4
         with:
           node-version: 20
-
-      - name: Install dependencies
-        run: npm ci
-
-      - name: Build project
-        run: npm run build --if-present
-
-      - name: Upload build artifacts
-        uses: actions/upload-artifact@v4
+      - run: npm ci
+      - run: npm run build --if-present
+      - uses: actions/upload-artifact@v4
         with:
           name: build-output
           path: dist/
-
-  integration-tests:
-    runs-on: ubuntu-latest
-    needs: build
-
-    steps:
-      - uses: actions/checkout@v4
-
-      - uses: actions/setup-node@v4
-        with:
-            node-version: 20
-
-      - name: Upload integration test logs
-        uses: actions/upload-artifact@v4
-        with:
-          name: integration-logs
-          path: logs/
-
-  report:
-    runs-on: ubuntu-latest
-    needs: [build, test, integration-tests]
-
-    steps:
-      - name: Final summary
-        run: echo "CI pipeline completed successfully."
 ```
 
-# 13. dockerfile
+---
+
+# 13. Dockerfile
+
+```dockerfile
+FROM node:20-alpine AS builder
+WORKDIR /app
+COPY package*.json ./
+RUN npm ci
+COPY . .
+RUN npm run build --if-present
+
+FROM node:20-alpine
+WORKDIR /app
+COPY --from=builder /app/dist ./dist
+COPY package*.json ./
+RUN npm ci --only=production
+CMD ["node", "dist/index.js"]
+```
+
 ```
 # Stage 1: Builder
 FROM node:20-alpine AS builder
@@ -354,19 +389,34 @@ jobs:
           docker push ${{ secrets.DOCKERHUB_USERNAME }}/myapp:ci
 ```
 
-14. build and push the image to acr using github actions 
+14. Build and Push the Image to Azure Container Registry (ACR) Using GitHub Actions
 
-```bash
-- search Create container registry
-- create ACR in Azure, copy(username,login-server,password) 
+To set up your Azure Container Registry (ACR) and integrate it with GitHub Actions, follow these steps:
 
-- Need to give secrets
-   - GitHub->settings->secrets and variables->actions->click on new repository 
-    ACR_USERNAME: xxxxxx
-    ACR_LOGIN_SERVER: xxxxx
-    ACR_PASSWORD: xxxxxx
+1. **Create an Azure Container Registry**:
+  - In the Azure portal, search for "Container Registries" and create a new registry.
+  - Make sure to copy the following details:
+    - **Username**
+    - **Login Server**
+    - **Password**
 
-```
+2. **Configure GitHub Secrets**:
+  - Navigate to your GitHub repository.
+  - Go to **Settings** > **Secrets and variables** > **Actions**.
+  - Click on **New repository secret** and add the following secrets:
+    - `ACR_USERNAME`: Your ACR username
+    - `ACR_LOGIN_SERVER`: Your ACR login server URL
+    - `ACR_PASSWORD`: Your ACR password
+
+3. **GitHub Actions Workflow**:
+  - Create or update your GitHub Actions workflow file (e.g., `.github/workflows/docker-build.yml`) with the following content:
+
+- This workflow will build your Docker image and push it to your Azure Container Registry whenever there is a push to the `main` branch or a pull request is created.
+
+- Make sure to replace `myapp` with your desired image name.
+- Ensure that your Dockerfile is correctly set up in the root of your repository.
+
+- This setup will automate the process of building and pushing your Docker images to ACR using GitHub Actions.
 
 ![alt text](<.images/Screenshot 2025-12-02 131416.png>)
 
@@ -406,9 +456,24 @@ jobs:
 
 ===
 
-15. Push the image to GHCR and give read and write permissions for workflow to use to the user
- - create token with required permissions to push image to GHCR 
- - copy token and paste into secrets 
+15. Push the image to GHCR and configure permissions for the workflow:
+
+- **Create a Personal Access Token**: Generate a token with the necessary permissions to push images to GHCR. Ensure it has `write:packages` and `read:packages` scopes.
+
+- **Add the Token to GitHub Secrets**: Navigate to your repository settings, go to **Secrets and variables** > **Actions**, and create a new secret. Name it `GH_TOKEN` and paste the generated token.
+
+- **Update Your Workflow**: Ensure your GitHub Actions workflow is set up to use this token for authentication when pushing images to GHCR.
+
+- **Example Workflow Snippet**:
+```yml
+- name: Login to GHCR
+  uses: docker/login-action@v3
+  with:
+    registry: ghcr.io
+    username: ${{ github.actor }}
+    password: ${{ secrets.GH_TOKEN }}
+```
+- This setup allows your workflow to authenticate and push images to GitHub Container Registry seamlessly.
 
 ```yml
 name: Docker Build (CI)
@@ -444,14 +509,25 @@ jobs:
 
 
 
-16. Setting Up SelfHosted Runner in GitHub  
-  
-  ```
-  -> Goto CI-CD-Github-Actions repo
-	-> Actions
-	  -> Runners
-	  -> click on New self Hosted Runner 
-  ```
+# 16. Setting Up Self-Hosted Runner in GitHub
+
+Follow these steps to configure a self-hosted runner:
+
+1. **Navigate to your repository settings**:
+  - Go to your GitHub repository
+  - Click on **Actions** tab
+  - Select **Runners** from the left sidebar
+
+2. **Create a new self-hosted runner**:
+  - Click on **New self-hosted runner**
+  - Select your operating system (Linux, Windows, or macOS)
+  - Follow the provided setup instructions
+
+3. **Key Points**:
+  - Download and configure the runner on your machine
+  - The runner will execute workflows on your local hardware
+  - Useful for jobs requiring specific dependencies or hardware access
+
 
 ![alt text](.images/github.com_annamthej_CI-CD-Github-Actions_settings_actions_runners_new_arch=x64&os=linux.png)
 
