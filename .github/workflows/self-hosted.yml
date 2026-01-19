@@ -1,6 +1,7 @@
 name: Hello World Workflow
 on:
-  pull_request:
+  workflow_dispatch:
+  # pull_request:
 
 # on:
    # push:
